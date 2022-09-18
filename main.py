@@ -1,4 +1,5 @@
 import os.path as path
+from datetime import datetime
 import questionary
 from get_token import get_token, check_token_expired
 from bus import Bus
@@ -21,7 +22,6 @@ def login():
 
 
 def main():
-
     print("gzic_bus / gzic校巴预约")
 
     token = ""
@@ -40,7 +40,46 @@ def main():
         login()
 
     bus = Bus(token)
-    print(bus.list_reserve())
+
+    campus = ["广州国际校区", "大学城校区", "五山校区"]
+
+    start_campus = questionary.select("请选择起点", choices=campus).ask()
+    end_campus = questionary.select(
+        "请选择终点", choices=list(filter(lambda x: x != start_campus, campus))
+    ).ask()
+
+    today = datetime.today().strftime("%Y/%m/%d")
+    date = questionary.text("请输入查询日期，格式为：yyyy/mm/dd".format(today), default=today).ask()
+
+    bus_list = bus.get_bus_list(start_campus, end_campus, date)
+    bus_choices = []
+
+    if len(bus_list) > 0:
+        for idx, bus in enumerate(bus_list):
+            bus_choices.append(
+                {
+                    "name": "{}. {}-{}".format(
+                        idx + 1, bus["startDate"], bus["endDate"]
+                    ),
+                    "value": idx,
+                    "disabled": bus["tickets"] == 0,
+                }
+            )
+
+        bus_idx = questionary.select(
+            "请选择班次（灰色为被预约完的班次）：",
+            choices=bus_choices,
+            style=questionary.Style(
+                [
+                    ("disabled", "#858585 italic"),
+                ]
+            )
+        ).ask()
+
+        print(bus_list[bus_idx])
+
+    else:
+        print("{}已经没有校巴了".format(date))
 
 
 if __name__ == "__main__":

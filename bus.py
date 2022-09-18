@@ -8,6 +8,7 @@ class Bus:
         session = requests.session()
         session.headers["User-Agent"] = user_agent
         session.headers["authorization"] = token
+        session.headers["Content-Type"] = "application/json"
 
         self.session = session
         self.base_url = "https://life.gzic.scut.edu.cn/commute/open/commute"
@@ -28,23 +29,22 @@ class Bus:
 
         return result
 
-    def get_bus_list(self, page_num=0, page_size=0):
-        url = "{}/commuteOrder/frequencyChoice?PageNum={}&PageSize={}".format(
-            self.base_url, page_num, page_size
-        )
+    
+    def get_bus_list(self, start_campus, end_campus, date):
+        url = self.base_url + "/commuteOrder/frequencyChoice?PageNum=0&PageSize=0"
 
         data = {
-            "endCampus": "大学城校区",
-            "endDate": "2022/09/25",
-            "startDate": "2022/09/18",
-            "startCampus": "广州国际校区",
+            "startDate": date,
+            "startCampus": start_campus,
+            "endDate": date,
+            "endCampus": end_campus,
             "startHsTime": "00:00",
             "endHsTime": "23:59",
         }
 
-        result = self.session.post(url, data).json()
+        result = self.session.post(url, json=data).json()
 
-        return result
+        return result["list"]
 
     def reserve_bus(self):
         url = "{}/commuteOrder/submitTicket"
