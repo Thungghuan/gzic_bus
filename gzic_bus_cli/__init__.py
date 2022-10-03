@@ -1,0 +1,1 @@
+from gzic_bus_cli.cli import main

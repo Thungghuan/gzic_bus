@@ -29,7 +29,6 @@ class Bus:
 
         return result
 
-    
     def get_bus_list(self, start_campus, end_campus, date):
         url = self.base_url + "/commuteOrder/frequencyChoice?PageNum=0&PageSize=0"
 
