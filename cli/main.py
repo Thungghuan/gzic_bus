@@ -1,6 +1,6 @@
 import questionary
 from cli.console import reset_console
-from cli.reserve_bus import ReserveBus
+from cli.reserve import ReserveBus
 from cli.token import load_token
 from bus import Bus
 from enum import Enum
