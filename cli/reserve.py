@@ -1,7 +1,7 @@
 from enum import Enum
 from datetime import datetime
 import questionary
-from bus import Bus
+from api.bus import Bus
 
 
 class ReserveState(Enum):

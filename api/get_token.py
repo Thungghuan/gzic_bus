@@ -1,6 +1,6 @@
 import re
 import requests
-from des import str_enc
+from api.des import str_enc
 
 
 def get_token(username: str, password: str):

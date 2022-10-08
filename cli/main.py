@@ -3,7 +3,7 @@ from cli.check import CheckReserveMenu
 from cli.console import reset_console
 from cli.reserve import ReserveBusMenu
 from cli.token import load_token
-from bus import Bus
+from api.bus import Bus
 from enum import Enum
 
 
@@ -101,3 +101,7 @@ class Menu:
 def main():
     menu = Menu()
     menu.run()
+
+
+if __name__ == "__main__":
+    main()

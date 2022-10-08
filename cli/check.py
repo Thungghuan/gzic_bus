@@ -1,6 +1,6 @@
 from enum import Enum
 import questionary
-from bus import Bus
+from api.bus import Bus
 
 
 class CheckState(Enum):
