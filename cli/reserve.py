@@ -11,6 +11,7 @@ class ReserveState(Enum):
     TIME = 4
     CONFIRM = 5
     END = 6
+    QUIT = 7
 
 
 class ReserveBus:
@@ -47,14 +48,19 @@ class ReserveBus:
             case ReserveState.END:
                 self.reserve_ticket()
 
+            case ReserveState.QUIT:
+                return 1
+
+        return 0
+
     def set_start_campus(self):
         campus = ["广州国际校区", "大学城校区", "五山校区", "返回主菜单"]
         self.start_campus = questionary.select("请选择起点", choices=campus).ask()
 
-        if self.start_campus != "返回":
+        if self.start_campus != "返回主菜单":
             self.change_state(ReserveState.END_CAMPUS)
         else:
-            self.change_state(ReserveState.END)
+            self.change_state(ReserveState.QUIT)
 
     def set_end_campus(self):
         campus = ["广州国际校区", "大学城校区", "五山校区", "返回"]
@@ -165,9 +171,9 @@ class ReserveBus:
 
         result = self.bus.reserve_bus(tickets)
 
-        if result["code"] == "200":
+        if result["code"] == 200:
             print("预定成功，请到小程序查看二维码上车")
         else:
             print("预约失败，请重试")
             print("失败信息：{}".format(result["msg"]))
-            self.state = ReserveState.TIME
+            self.change_state(ReserveState.TIME)

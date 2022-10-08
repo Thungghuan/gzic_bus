@@ -50,7 +50,6 @@ class Menu:
             choices=menu_choices,
         ).ask()
 
-        print(menu[choice])
         self.change_state(choice_state[choice])
 
     def change_state(self, state: MenuState):
@@ -67,9 +66,10 @@ class Menu:
                 self.quit()
 
     def reserve_bus(self):
-        ReserveBus(self.bus)
+        result = ReserveBus(self.bus)
 
-        self.back_main_menu()
+        if result == 0:
+            self.back_main_menu()
 
     def check_reserve(self):
         tickets = self.bus.list_reserve(status=1)["list"]
