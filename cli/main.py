@@ -1,6 +1,7 @@
 import questionary
+from cli.check import CheckReserveMenu
 from cli.console import reset_console
-from cli.reserve import ReserveBus
+from cli.reserve import ReserveBusMenu
 from cli.token import load_token
 from bus import Bus
 from enum import Enum
@@ -65,35 +66,15 @@ class Menu:
         self.state = state
 
     def reserve_bus(self):
-        reserve_menu = ReserveBus(self.bus)
-
+        reserve_menu = ReserveBusMenu(self.bus)
         result = reserve_menu.run()
+
         if result == 0:
             self.back_main_menu()
 
     def check_reserve(self):
-        tickets = self.bus.list_reserve(status=1)["list"]
-        ticket_choices = []
-
-        for idx, bus in enumerate(tickets):
-            ticket_choices.append(
-                {
-                    "name": "{}. {} {}".format(
-                        idx + 1, bus["ruteName"], bus["startTime"]
-                    ),
-                    "value": idx,
-                }
-            )
-
-        if len(ticket_choices) > 0:
-            choice = questionary.select(
-                "请选择班次：",
-                choices=ticket_choices,
-            ).ask()
-
-            print(choice)
-        else:
-            print("没有找到预约的校巴哦")
+        check_reserve_menu = CheckReserveMenu(self.bus)
+        check_reserve_menu.run()
 
         self.back_main_menu()
 

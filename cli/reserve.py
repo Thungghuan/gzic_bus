@@ -14,7 +14,8 @@ class ReserveState(Enum):
     QUIT = 7
 
 
-class ReserveBus:
+class ReserveBusMenu:
+    state = 0
     default_date = datetime.today().strftime("%Y/%m/%d")
     start_campus = ""
     end_campus = ""
@@ -23,7 +24,6 @@ class ReserveBus:
 
     def __init__(self, bus: Bus) -> None:
         self.bus = bus
-        self.state = ReserveState.START_CAMPUS
         self.change_state(ReserveState.START_CAMPUS)
 
     def run(self):
@@ -124,7 +124,7 @@ class ReserveBus:
                 self.change_state(ReserveState.DATE)
             else:
                 print("校巴完整信息：")
-                print("ID: {}".format(bus_list[bus_idx]["ids"]))
+                print("IDs: {}".format(bus_list[bus_idx]["ids"]))
                 print("日期: {}".format(bus_list[bus_idx]["dateDeparture"]))
                 print(
                     "时间: {}-{}".format(

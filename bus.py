@@ -29,6 +29,20 @@ class Bus:
 
         return result
 
+    def cancel_ticket(self, ticket_id):
+        url = "{}/commuteOrder/cancelTicket?id={}".format(self.base_url, ticket_id)
+
+        result = self.session.get(url).json()
+
+        return result
+
+    def delete_ticket(self, ticket_id):
+        url = "{}/commuteOrder/removeOrderCanal?id={}".format(self.base_url, ticket_id)
+
+        result = self.session.get(url).json()
+
+        return result
+
     def get_bus_list(self, start_campus, end_campus, date):
         url = self.base_url + "/commuteOrder/frequencyChoice?PageNum=0&PageSize=0"
 
