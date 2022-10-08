@@ -12,10 +12,15 @@
 ## cli使用方法
 
 1. 安装依赖(`requests`和`questionary`)
-    ```
+    ```bash
     pip install -r requirements.txt
     ```
 
+    如果你使用[`nix`](https://nixos.org/)包管理器的话，只要运行以下命令，便可以进入一个包含所有依赖（包括`python`）的环境（请确保您启用了`nix flake`, [教程](https://nixos.wiki/wiki/Flakes)）:
+    ```bash
+    nix develop
+    ```
+    
 2. 运行脚本
     ```
     python main.py
