@@ -1,3 +1,4 @@
+from unittest import result
 import requests
 
 
@@ -65,3 +66,8 @@ class Bus:
         result = self.session.post(url, json=tickets).json()
 
         return result
+
+    def qrcode_data(self, ticket_id):
+        result = self.ticket_detail(ticket_id)["data"]
+
+        return {"id": result["id"], "frequencyId": result["frequencyId"]}
