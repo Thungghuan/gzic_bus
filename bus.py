@@ -45,23 +45,23 @@ class Bus:
 
         return result["list"]
 
-    def reserve_bus(self):
-        url = "{}/commuteOrder/submitTicket"
+    def reserve_bus(self, tickets):
+        url = self.base_url + "/commuteOrder/submitTicket"
 
-        data = [
-            {
-                "ids": "17501,17502",
-                "dateDeparture": "2022/09/19",
-                "startDate": "07:10",
-                "endDate": "07:35",
-                "startLocation": "国际校区D5",
-                "downtown": "大学城校区音乐厅",
-                "tickets": 1,
-                "ischecked": True,
-                "subTickets": 1,
-            }
-        ]
+        # data = [
+        #     {
+        #         "ids": "17501,17502",
+        #         "dateDeparture": "2022/09/19",
+        #         "startDate": "07:10",
+        #         "endDate": "07:35",
+        #         "startLocation": "国际校区D5",
+        #         "downtown": "大学城校区音乐厅",
+        #         "tickets": 1,
+        #         "ischecked": True,
+        #         "subTickets": 1,
+        #     }
+        # ]
 
-        result = self.session.post(url, data).json()
+        result = self.session.post(url, json=tickets).json()
 
         return result

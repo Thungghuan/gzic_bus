@@ -37,11 +37,15 @@ class ReserveBus:
 
             case ReserveState.DATE:
                 self.set_date()
+
             case ReserveState.TIME:
                 self.set_time()
 
+            case ReserveState.CONFIRM:
+                self.confirm_ticket()
+
             case ReserveState.END:
-                print(self.ticket)
+                self.reserve_ticket()
 
     def set_start_campus(self):
         campus = ["广州国际校区", "大学城校区", "五山校区", "返回主菜单"]
@@ -121,17 +125,8 @@ class ReserveBus:
                     )
                 )
 
-                choices = [
-                    {"name": "是", "value": True},
-                    {"name": "否", "value": False},
-                ]
-                is_confirm = questionary.select("确认预定", choices=choices).ask()
-
-                if is_confirm:
-                    self.ticket = bus_list[bus_idx]
-                    self.change_state(ReserveState.END)
-                else:
-                    self.change_state(ReserveState.TIME)
+                self.ticket = bus_list[bus_idx]
+                self.change_state(ReserveState.CONFIRM)
 
         else:
             print("{}已经没有校巴了".format(self.date))
@@ -146,3 +141,33 @@ class ReserveBus:
                 self.change_state(ReserveState.DATE)
             else:
                 self.change_state(ReserveState.END)
+
+    def confirm_ticket(self):
+        choices = [
+            {"name": "是", "value": True},
+            {"name": "否", "value": False},
+        ]
+        is_confirm = questionary.select("确认预定", choices=choices).ask()
+
+        if is_confirm:
+            self.change_state(ReserveState.END)
+        else:
+            self.change_state(ReserveState.TIME)
+
+    def reserve_ticket(self):
+        tickets = [
+            {
+                **self.ticket,
+                "ischecked": True,
+                "subTickets": 1,
+            }
+        ]
+
+        result = self.bus.reserve_bus(tickets)
+
+        if result["code"] == "200":
+            print("预定成功，请到小程序查看二维码上车")
+        else:
+            print("预约失败，请重试")
+            print("失败信息：{}".format(result["msg"]))
+            self.state = ReserveState.TIME
