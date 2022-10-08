@@ -69,7 +69,10 @@ class Menu:
         reserve_menu = ReserveBusMenu(self.bus)
         result = reserve_menu.run()
 
-        if result == 0:
+        if result == 1:
+            self.change_state(MenuState.START)
+
+        else:
             self.back_main_menu()
 
     def check_reserve(self):
