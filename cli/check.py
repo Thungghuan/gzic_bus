@@ -23,7 +23,10 @@ class CheckReserveMenu:
         while self.state != CheckState.QUIT:
             match self.state:
                 case CheckState.LIST:
-                    self.list_tickets()
+                    is_quit = self.list_tickets()
+
+                    if is_quit:
+                        return 1
 
                 case CheckState.DETAIL:
                     self.get_ticket_detail()
@@ -33,6 +36,8 @@ class CheckReserveMenu:
 
                 case CheckState.DELETE:
                     self.delete_ticket()
+
+        return 0
 
     def change_state(self, state: CheckState):
         self.state = state
@@ -52,17 +57,34 @@ class CheckReserveMenu:
             )
 
         if len(ticket_choices) > 0:
+
+            ticket_choices.append(
+                {
+                    "name": "{}. 返回主菜单".format(len(tickets) + 1),
+                    "value": -1,
+                }
+            )
+
             choice = questionary.select(
                 "请选择班次：",
                 choices=ticket_choices,
             ).ask()
 
-            self.ticket = tickets[choice]
-            self.change_state(CheckState.DETAIL)
+            if choice == -1:
+                self.change_state(CheckState.QUIT)
+                return True
+
+            else:
+                self.ticket = tickets[choice]
+                self.change_state(CheckState.DETAIL)
+                
+                return False
 
         else:
             print("没有找到预约的校巴哦")
             self.change_state(CheckState.QUIT)
+
+            return False
 
     def get_ticket_detail(self):
         result = self.bus.ticket_detail(self.ticket["id"])["data"]

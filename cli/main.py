@@ -77,9 +77,13 @@ class Menu:
 
     def check_reserve(self):
         check_reserve_menu = CheckReserveMenu(self.bus)
-        check_reserve_menu.run()
+        result = check_reserve_menu.run()
 
-        self.back_main_menu()
+        if result == 1:
+            self.change_state(MenuState.START)
+
+        else:
+            self.back_main_menu()
 
     def quit(self):
         print("88")
