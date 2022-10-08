@@ -135,7 +135,7 @@ class Menu:
         else:
             print("没有找到预约的校巴哦")
 
-        self.back_main_menu(True)
+        self.back_main_menu()
 
     def quit(self):
         print("88")
