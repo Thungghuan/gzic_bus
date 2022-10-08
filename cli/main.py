@@ -1,6 +1,6 @@
-from datetime import datetime
 import questionary
-from cli.console import clear, reset_console
+from cli.console import reset_console
+from cli.reserve_bus import ReserveBus
 from cli.token import load_token
 from bus import Bus
 from enum import Enum
@@ -67,49 +67,9 @@ class Menu:
                 self.quit()
 
     def reserve_bus(self):
-        campus = ["广州国际校区", "大学城校区", "五山校区"]
+        ReserveBus(self.bus)
 
-        start_campus = questionary.select("请选择起点", choices=campus).ask()
-        end_campus = questionary.select(
-            "请选择终点", choices=list(filter(lambda x: x != start_campus, campus))
-        ).ask()
-
-        today = datetime.today().strftime("%Y/%m/%d")
-        date = questionary.text(
-            "请输入查询日期，格式为：yyyy/mm/dd".format(today), default=today
-        ).ask()
-
-        bus_list = self.bus.get_bus_list(start_campus, end_campus, date)
-        bus_choices = []
-
-        if len(bus_list) > 0:
-            for idx, bus in enumerate(bus_list):
-                bus_choices.append(
-                    {
-                        "name": "{}. {}-{}".format(
-                            idx + 1, bus["startDate"], bus["endDate"]
-                        ),
-                        "value": idx,
-                        "disabled": bus["tickets"] == 0,
-                    }
-                )
-
-            bus_idx = questionary.select(
-                "请选择班次（灰色为被预约完的班次）：",
-                choices=bus_choices,
-                style=questionary.Style(
-                    [
-                        ("disabled", "#858585 italic"),
-                    ]
-                ),
-            ).ask()
-
-            print(bus_list[bus_idx])
-
-        else:
-            print("{}已经没有校巴了".format(date))
-
-        self.back_main_menu(True)
+        self.back_main_menu()
 
     def check_reserve(self):
         tickets = self.bus.list_reserve(status=1)["list"]
@@ -140,19 +100,11 @@ class Menu:
     def quit(self):
         print("88")
 
-    def back_main_menu(self, last_page=False):
-        if not last_page:
-            choices = [
-                {"name": "返回主菜单", "value": MenuState.START},
-                {"name": "退出", "value": MenuState.QUIT},
-            ]
-        else:
-            choices = [
-                {"name": "返回主菜单", "value": MenuState.START},
-                {"name": "重新选择", "value": self.state},
-                {"name": "退出", "value": MenuState.QUIT},
-            ]
-
+    def back_main_menu(self):
+        choices = [
+            {"name": "返回主菜单", "value": MenuState.START},
+            {"name": "退出", "value": MenuState.QUIT},
+        ]
         choice = questionary.select("请选择下一步操作", choices=choices).ask()
 
         self.change_state(choice)
