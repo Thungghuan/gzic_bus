@@ -1,46 +1,8 @@
-import os.path as path
 from datetime import datetime
 import questionary
-from gzic_bus_cli.console import clear, reset_console
-from get_token import get_token, check_token_expired
+from cli.console import clear, reset_console
+from cli.token import load_token
 from bus import Bus
-
-def load_token():
-    token = ""
-    print("读取token文件中...")
-
-    if path.exists("token"):
-        with open("token") as f:
-            token = f.read().strip()
-
-            if check_token_expired(token):
-                print("token过期")
-                login()
-            else:
-                print("token读取成功")
-    else:
-        token = login()
-
-    return token
-
-
-def login():
-    print("请先使用统一认证账号登陆获取token")
-    username = questionary.text("学号：").ask()
-    password = questionary.password("密码：").ask()
-
-    if not username or not password:
-        print("请输入用户名和密码")
-        exit()
-
-    token = get_token(username, password)
-    print("登陆成功，写入token文件")
-
-    with open("token", "w+") as f:
-        f.write(token)
-
-    return token
-
 
 def check_reserve(bus: Bus):
     tickets = bus.list_reserve(status=1)["list"]

@@ -1,4 +1,4 @@
-from gzic_bus_cli import main
+from cli import main
 
 
 if __name__ == "__main__":
