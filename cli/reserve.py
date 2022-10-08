@@ -26,32 +26,36 @@ class ReserveBus:
         self.state = ReserveState.START_CAMPUS
         self.change_state(ReserveState.START_CAMPUS)
 
-    def change_state(self, state: ReserveState):
-        self.state = state
+    def run(self):
+        while self.state != ReserveState.QUIT:
+            match self.state:
+                case ReserveState.START_CAMPUS:
+                    is_quit = self.set_start_campus()
+                    if is_quit:
+                        return 1
 
-        match state:
-            case ReserveState.START_CAMPUS:
-                self.set_start_campus()
+                case ReserveState.END_CAMPUS:
+                    self.set_end_campus()
 
-            case ReserveState.END_CAMPUS:
-                self.set_end_campus()
+                case ReserveState.DATE:
+                    self.set_date()
 
-            case ReserveState.DATE:
-                self.set_date()
+                case ReserveState.TIME:
+                    self.set_time()
 
-            case ReserveState.TIME:
-                self.set_time()
+                case ReserveState.CONFIRM:
+                    self.confirm_ticket()
 
-            case ReserveState.CONFIRM:
-                self.confirm_ticket()
+                case ReserveState.END:
+                    self.reserve_ticket()
 
-            case ReserveState.END:
-                self.reserve_ticket()
-
-            case ReserveState.QUIT:
-                return 1
+                case ReserveState.QUIT:
+                    return 0
 
         return 0
+
+    def change_state(self, state: ReserveState):
+        self.state = state
 
     def set_start_campus(self):
         campus = ["广州国际校区", "大学城校区", "五山校区", "返回主菜单"]
@@ -59,8 +63,9 @@ class ReserveBus:
 
         if self.start_campus != "返回主菜单":
             self.change_state(ReserveState.END_CAMPUS)
+            return False
         else:
-            self.change_state(ReserveState.QUIT)
+            return True
 
     def set_end_campus(self):
         campus = ["广州国际校区", "大学城校区", "五山校区", "返回"]
@@ -76,11 +81,14 @@ class ReserveBus:
 
     def set_date(self):
         self.date = questionary.text(
-            "请输入查询日期，格式为：yyyy/mm/dd", default=self.default_date
+            "请输入查询日期，格式为：yyyy/mm/dd（空字符串则返回）", default=self.default_date
         ).ask()
 
-        self.default_date = self.date
-        self.change_state(ReserveState.TIME)
+        if not self.date:
+            self.change_state(ReserveState.END_CAMPUS)
+        else:
+            self.default_date = self.date
+            self.change_state(ReserveState.TIME)
 
     def set_time(self):
         bus_list = self.bus.get_bus_list(self.start_campus, self.end_campus, self.date)
@@ -146,7 +154,7 @@ class ReserveBus:
             if is_confirm:
                 self.change_state(ReserveState.DATE)
             else:
-                self.change_state(ReserveState.END)
+                self.change_state(ReserveState.QUIT)
 
     def confirm_ticket(self):
         choices = [
@@ -173,6 +181,8 @@ class ReserveBus:
 
         if result["code"] == 200:
             print("预定成功，请到小程序查看二维码上车")
+            self.change_state(ReserveState.QUIT)
+
         else:
             print("预约失败，请重试")
             print("失败信息：{}".format(result["msg"]))

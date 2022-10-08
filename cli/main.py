@@ -24,7 +24,16 @@ class Menu:
         self.bus = Bus(self.token)
 
     def run(self):
-        self.start_menu()
+        while self.state != MenuState.QUIT:
+            match self.state:
+                case MenuState.START:
+                    self.start_menu()
+                case MenuState.RESERVE_BUS:
+                    self.reserve_bus()
+                case MenuState.CHECK_RESERVE:
+                    self.check_reserve()
+
+        self.quit()
 
     def start_menu(self):
         reset_console()
@@ -55,19 +64,10 @@ class Menu:
     def change_state(self, state: MenuState):
         self.state = state
 
-        match state:
-            case MenuState.START:
-                self.start_menu()
-            case MenuState.RESERVE_BUS:
-                self.reserve_bus()
-            case MenuState.CHECK_RESERVE:
-                self.check_reserve()
-            case MenuState.QUIT:
-                self.quit()
-
     def reserve_bus(self):
-        result = ReserveBus(self.bus)
+        reserve_menu = ReserveBus(self.bus)
 
+        result = reserve_menu.run()
         if result == 0:
             self.back_main_menu()
 
