@@ -68,11 +68,12 @@ class ReserveBusMenu:
             return True
 
     def set_end_campus(self):
-        campus = ["广州国际校区", "大学城校区", "五山校区", "返回"]
-        self.end_campus = questionary.select(
-            "请选择终点",
-            choices=list(filter(lambda x: x != self.start_campus, campus)),
-        ).ask()
+        if self.start_campus == "广州国际校区":
+            campus = ["大学城校区", "五山校区", "返回"]
+        else:
+            campus = ["广州国际校区", "返回"]
+
+        self.end_campus = questionary.select("请选择终点", choices=campus).ask()
 
         if self.end_campus != "返回":
             self.change_state(ReserveState.DATE)
