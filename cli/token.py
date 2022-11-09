@@ -5,7 +5,7 @@ from api.get_token import check_token_expired, get_token
 TOKEN_PATH = ".token"
 
 
-def load_token():
+def load_token(username = None, password = None):
     token = ""
     print("读取token文件中...")
 
@@ -15,19 +15,20 @@ def load_token():
 
             if check_token_expired(token):
                 print("token过期")
-                login()
+                login(username, password)
             else:
                 print("token读取成功")
     else:
-        token = login()
+        token = login(username, password)
 
     return token
 
 
-def login():
-    print("请先使用统一认证账号登陆获取token")
-    username = questionary.text("学号：").ask()
-    password = questionary.password("密码：").ask()
+def login(username = None, password = None):
+    if not username or not password:
+        print("请先使用统一认证账号登陆获取token")
+        username = questionary.text("学号：").ask()
+        password = questionary.password("密码：").ask()
 
     if not username or not password:
         print("请输入用户名和密码")
