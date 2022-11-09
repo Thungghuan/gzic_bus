@@ -49,8 +49,8 @@ class CheckReserveMenu:
         for idx, bus in enumerate(tickets):
             ticket_choices.append(
                 {
-                    "name": "{}. {} {}".format(
-                        idx + 1, bus["ruteName"], bus["startTime"]
+                    "name": "{}. {} {} {}".format(
+                        idx + 1, bus["ruteName"], bus["dateDeparture"], bus["startTime"]
                     ),
                     "value": idx,
                 }
@@ -77,7 +77,7 @@ class CheckReserveMenu:
             else:
                 self.ticket = tickets[choice]
                 self.change_state(CheckState.DETAIL)
-                
+
                 return False
 
         else:
