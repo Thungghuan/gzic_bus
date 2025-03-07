@@ -1,6 +1,6 @@
 import questionary
 import os.path as path
-from api.get_token import check_token_expired, get_token, LoginSession
+from api.get_token import check_token_expired, LoginSession
 
 TOKEN_PATH = ".token"
 
