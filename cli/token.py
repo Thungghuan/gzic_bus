@@ -1,6 +1,6 @@
 import questionary
 import os.path as path
-from api.get_token import check_token_expired, get_token
+from api.get_token import check_token_expired, get_token, LoginSession
 
 TOKEN_PATH = ".token"
 
@@ -34,7 +34,15 @@ def login(username = None, password = None):
         print("请输入用户名和密码")
         exit()
 
-    token = get_token(username, password)
+    # token = get_token(username, password)
+    login_sess = LoginSession()
+    need_captcha, lt = login_sess.login(username, password)
+
+    if need_captcha:
+        captcha = questionary.text("验证码：").ask()
+        login_sess.relogin(username, password, captcha, lt)
+
+    token = login_sess.get_token()
     print("登陆成功，写入token文件")
 
     with open(TOKEN_PATH, "w+") as f:
