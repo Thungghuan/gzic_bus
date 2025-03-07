@@ -13,7 +13,7 @@ def load_token(username = None, password = None):
         with open(TOKEN_PATH) as f:
             token = f.read().strip()
 
-            if check_token_expired(token):
+            if token == "" or check_token_expired(token):
                 print("token过期")
                 login(username, password)
             else:
