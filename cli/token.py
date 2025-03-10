@@ -16,7 +16,7 @@ def load_token(username=None, password=None):
 
             if token == "" or check_token_expired(token):
                 print("token过期")
-                login(username, password)
+                token = login(username, password)
             else:
                 print("token读取成功")
     else:

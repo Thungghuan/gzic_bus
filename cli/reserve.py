@@ -95,6 +95,11 @@ class ReserveBusMenu:
         bus_list = self.bus.get_bus_list(self.start_campus, self.end_campus, self.date)
         bus_choices = []
 
+        if not bus_list:
+            print("请求错误，请稍后重试")
+            self.change_state(ReserveState.DATE)
+            return
+
         if len(bus_list) > 0:
             for idx, bus in enumerate(bus_list):
                 bus_choices.append(
